@@ -23,6 +23,10 @@ const {spinKeyframes, opacityIncreaseElementKeyframes} = require('../../styles/a
 
 const defaultIconSvg = require('../../../../extensions/brave/img/tabs/default.svg')
 const loadingIconSvg = require('../../../../extensions/brave/img/tabs/loading.svg')
+const settings = require('../../../../../js/constants/settings')
+const {getSetting} = require('../../../../../js/settings')
+const appConfig = require('../../../../../js/constants/appConfig')
+const domUtil = require('../../../lib/domUtil')
 
 class Favicon extends React.Component {
   constructor (props) {
@@ -34,10 +38,19 @@ class Favicon extends React.Component {
     const currentWindow = state.get('currentWindow')
     const tabId = ownProps.tabId
     const frameKey = frameStateUtil.getFrameKeyByTabId(currentWindow, tabId)
+    const frame = frameStateUtil.getFrameByKey(currentWindow, frameKey)
 
     const props = {}
     props.isPinned = tabState.isTabPinned(state, tabId)
-    props.favicon = faviconState.getFavicon(currentWindow, frameKey)
+    props.isTor = frame && frame.get('isPrivate') && getSetting(settings.USE_TOR_PRIVATE_TABS)
+    const favicon = faviconState.getFavicon(currentWindow, frameKey)
+    if (props.isTor) {
+      if (favicon && favicon.startsWith('data:')) {
+        props.favicon = favicon
+      }
+    } else {
+      props.favicon = favicon
+    }
     props.showIcon = faviconState.showFavicon(currentWindow, frameKey)
     props.tabLoading = faviconState.showLoadingIcon(currentWindow, frameKey)
     props.tabIconColor = tabUIState.getTabIconColor(currentWindow, frameKey)
@@ -92,7 +105,9 @@ class Favicon extends React.Component {
     const themeLight = this.props.tabIconColor === 'white'
     const instanceStyles = { }
     if (this.props.favicon) {
-      instanceStyles['--faviconsrc'] = `url(${this.props.favicon})`
+      if (!this.props.isTor || this.props.favicon.startsWith('data:')) {
+        instanceStyles['--faviconsrc'] = `url(${this.props.favicon})`
+      }
     }
 
     return <TabIcon

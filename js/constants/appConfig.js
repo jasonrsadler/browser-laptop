@@ -104,6 +104,9 @@ module.exports = {
     delayNotificationTryPayments: 1000 * 60 * 60 * 24 * 10, // 10 days (from firstRunTimestamp)
     defaultContributionAmount: 7.5
   },
+  tor: {
+    partition: 'persist:tor'
+  },
   updates: {
     // Check for front end updates every hour
     appUpdateCheckFrequency: 1000 * 60 * 60,

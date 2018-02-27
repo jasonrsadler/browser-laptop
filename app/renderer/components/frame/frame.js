@@ -586,6 +586,9 @@ class Frame extends React.Component {
         case messages.HIDE_CONTEXT_MENU:
           method = () => windowActions.setContextMenuDetail()
           break
+        case messages.GOT_PAGE_FAVICON:
+          method = (dataUrl) => windowActions.setFavicon(this.frame, dataUrl)
+          break
       }
       method.apply(this, e.args)
     }, { passive: true })

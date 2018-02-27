@@ -116,6 +116,22 @@ let generateBraveManifest = () => {
         ]
       },
       {
+        run_at: 'document_end',
+        all_frames: false,
+        matches: ['<all_urls>'],
+        include_globs: [
+          'http://*/*', 'https://*/*'
+        ],
+        exclude_globs: [
+          indexHTML,
+          getBraveExtUrl('about-*.html'),
+          getBraveExtUrl('about-*.html') + '#*'
+        ],
+        js: [
+          'content/scripts/favicon.js'
+        ]
+      },
+      {
         run_at: 'document_start',
         js: [
           'content/scripts/util.js',
