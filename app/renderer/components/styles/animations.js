@@ -20,6 +20,10 @@ const opacityIncreaseKeyframes = {
   }
 }
 
+const opacityIncreaseElementKeyframes = {
+  opacity: [0, 1]
+}
+
 // TODO: this could be a function with param included
 // to which property should be changed
 const widthIncreaseKeyframes = (start, end) => ({
@@ -31,8 +35,29 @@ const widthIncreaseKeyframes = (start, end) => ({
   }
 })
 
+const widthIncreaseElementKeyframes = (start, end) => ({
+  width: [start, end]
+})
+
+const tabFadeInKeyframes = {
+  '0%': {
+    opacity: 0.5
+  },
+
+  '50%': {
+    opacity: 0.6
+  },
+
+  '100%': {
+    opacity: 0.5
+  }
+}
+
 module.exports = {
   spinKeyframes,
   opacityIncreaseKeyframes,
-  widthIncreaseKeyframes
+  opacityIncreaseElementKeyframes,
+  widthIncreaseKeyframes,
+  widthIncreaseElementKeyframes,
+  tabFadeInKeyframes
 }

@@ -2,7 +2,7 @@
 * License, v. 2.0. If a copy of the MPL was not distributed with this file,
 * You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-const {opacityIncreaseKeyframes} = require('./animations')
+const {opacityIncreaseKeyframes, tabFadeInKeyframes} = require('./animations')
 
 /**
 * Use this file when the style you need
@@ -146,8 +146,14 @@ const globalStyles = {
     textAreaFontSize: '14.5px',
     dragSpacing: '50px',
     switchHeight: '16px',
+    switchHeightLarge: '26px',
+    switchHeightSmall: '12px',
     switchWidth: '45px',
+    switchWidthLarge: '60px',
+    switchWidthSmall: '30px',
     switchNubDiameter: '12px',
+    switchNubDiameterLarge: '22px',
+    switchNubDiameterSmall: '10px',
     switchNubTopMargin: '2px',
     switchNubLeftMargin: '2px',
     switchNubRightMargin: '2px',
@@ -186,6 +192,7 @@ const globalStyles = {
     iconSize: '16px',
     sessionIconSize: '15px',
     closeIconSize: '13px',
+    newSessionIconSize: '13px',
     narrowIconSize: '12px',
     dialogWidth: '422px',
     dialogSmallWidth: '350px',

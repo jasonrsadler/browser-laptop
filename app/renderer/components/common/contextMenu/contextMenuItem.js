@@ -15,6 +15,19 @@ const windowActions = require('../../../../../js/actions/windowActions')
 const cx = require('../../../../../js/lib/classSet')
 const {formatAccelerator} = require('../../../../common/lib/formatUtil')
 const {elementHasDataset} = require('../../../../../js/lib/eventUtil')
+const isWindows = require('../../../../common/lib/platformUtil').isWindows()
+
+const {StyleSheet, css} = require('aphrodite/no-important')
+const globalStyles = require('../../styles/global')
+const {theme} = require('../../styles/theme')
+
+class SubmenuIndicatorContainer extends React.Component {
+  render() {
+    return <div className={css(styles.SubmenuIndicatorContainer)}>
+      {this.props.children}
+    </div>
+  }
+}
 
 class ContextMenuItem extends ImmutableComponent {
   componentDidMount () {
@@ -183,19 +196,22 @@ class ContextMenuItem extends ImmutableComponent {
     }
 
     if (this.props.contextMenuItem.get('type') === 'separator') {
-      return <div className='contextMenuItem contextMenuSeparator' role='listitem'>
-        <hr />
+      return <div className={css(styles.item_separator)} data-test-id='contextMenuItem' role='listitem'>
+        <hr className={css(styles.item_separator__hr)} />
       </div>
     }
     const props = {
-      className: cx({
-        contextMenuItem: true,
-        hasFaIcon: faIcon,
-        checkedMenuItem: this.props.contextMenuItem.get('checked'),
-        hasIcon: icon || faIcon,
-        selectedByKeyboard: this.props.selected,
-        multiContextMenuItem: this.isMulti
-      }),
+      className: css(
+        styles.item,
+        isWindows && styles.item_isWindows,
+        this.props.selected && styles.item_selectedByKeyboard,
+        this.isMulti && styles.item_isMulti,
+        (icon || faIcon) && styles.item_hasIcon,
+        (icon && faIcon) && styles.item_hasFaIcon,
+        this.props.contextMenuItem.get('checked') && styles.item_checked,
+        (this.props.contextMenuItem.get('type') !== 'separator') && styles.item_item,
+        (this.props.contextMenuItem.get('enabled') === false) && styles.item_isDisabled
+      ),
       role: 'listitem'
     }
 
@@ -205,6 +221,9 @@ class ContextMenuItem extends ImmutableComponent {
 
     return <div {...props}
       data-context-menu-item
+      data-context-menu-item-selected-by-keyboard={this.props.selected}
+      data-test-id='contextMenuItem'
+      data-test2-id={this.props.selected ? 'selectedByKeyboard' : null}
       ref={(node) => { this.node = node }}
       draggable={this.props.contextMenuItem.get('draggable')}
       onDragStart={this.onDragStart.bind(this)}
@@ -218,14 +237,16 @@ class ContextMenuItem extends ImmutableComponent {
     >
       {
         this.props.contextMenuItem.get('checked')
-          ? <span className='fa fa-check contextMenuCheckIndicator' />
+          ? <span className={cx({
+            [globalStyles.appIcons.check]: true,
+            [css(styles.item__checkIndicator)]: true
+          })} />
           : null
       }
       {
         icon || faIcon
           ? <span className={cx({
-            contextMenuIcon: true,
-            hasFaIcon: !!faIcon,
+            [css(styles.item__icon, !!faIcon && styles.item__icon_hasFa)]: true,
             fa: faIcon,
             [faIcon]: !!faIcon
           })}
@@ -233,12 +254,13 @@ class ContextMenuItem extends ImmutableComponent {
           />
           : null
       }
-      <span className='contextMenuItemText'
+      <span className={css(styles.item__text)}
         data-l10n-id={this.props.contextMenuItem.get('l10nLabelId')}
+        data-test-id='contextMenuItemText'
       >{this.props.contextMenuItem.get('label')}</span>
       {
         this.isMulti && this.props.contextMenuItem.get('items').map((subItem) =>
-          <div className='contextMenuSubItem'
+          <div className={css(styles.item__isMulti)}
             onClick={this.onClick.bind(this, subItem.get('click'), false)}
           >
             <span data-l10n-id={subItem.get('l10nLabelId')}>{this.getLabelForItem(subItem)}</span>
@@ -246,19 +268,148 @@ class ContextMenuItem extends ImmutableComponent {
       }
       {
         this.hasSubmenu
-          ? <span className='submenuIndicatorContainer'>
-            <span className='submenuIndicatorSpacer' />
-            <span className='submenuIndicator fa fa-chevron-right' />
-          </span>
+          ? <SubmenuIndicatorContainer>
+            <span className={cx({
+              [globalStyles.appIcons.next]: true,
+              [css(styles.item__submenuIndicator, styles.item__submenuIndicator_next)]: true
+            })} />
+          </SubmenuIndicatorContainer>
           : this.hasAccelerator
-          ? <span className='submenuIndicatorContainer'>
-            <span className='submenuIndicatorSpacer' />
-            <span className='accelerator'>{formatAccelerator(this.accelerator)}</span>
-          </span>
+          ? <SubmenuIndicatorContainer>
+            <span className={css(
+              styles.item__submenuIndicator,
+              isWindows && styles.item__submenuIndicator_accelerator_isWindows
+            )}>{formatAccelerator(this.accelerator)}</span>
+          </SubmenuIndicatorContainer>
           : null
       }
     </div>
   }
 }
+
+const styles = StyleSheet.create({
+  submenuIndicatorContainer: {
+    display: 'flex'
+  },
+
+  item_separator: {
+    padding: '1px 0px'
+  },
+
+  item_separator__hr: {
+    backgroundColor: theme.contextMenu.item.separator.hr.backgroundColor,
+    border: 'none',
+    height: '1px',
+    width: '100%'
+  },
+
+  item: {
+    maxWidth: '420px',
+    paddingTop: '6px',
+    paddingRight: '10px',
+    paddingBottom: '6px',
+    paddingLeft: '20px',
+    boxSizing: 'border-box',
+    display: 'flex',
+    alignItems: 'center',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    userSelect: 'none',
+
+    ':hover': {
+      color: theme.contextMenu.item.selected.color,
+      backgroundColor: theme.contextMenu.item.selected.backgroundColor
+    }
+  },
+
+  item_isWindows: {
+    // Make context menu style match menubar (Windows only- for use w/ slim titlebar)
+    fontFamily: 'menu',
+    fontSize: '12px'
+  },
+
+  item_selectedByKeyboard: {
+    backgroundColor: theme.contextMenu.item.selected.backgroundColor,
+    color: theme.contextMenu.item.selected.color
+  },
+
+  item_isMulti: {
+    display: 'flex'
+  },
+
+  item_hasIcon: {
+    paddingLeft: '10px'
+  },
+
+  item_hasFaIcon: {
+    paddingLeft: '12px'
+  },
+
+  item_checked: {
+    justifyContent: 'flex-start',
+    paddingLeft: '4px'
+  },
+
+  item_item: {
+    ':hover': {
+      color: theme.contextMenu.item.selected.color,
+      backgroundColor: theme.contextMenu.item.selected.backgroundColor
+    }
+  },
+
+  item_isDisabled: {
+    color: theme.contextMenu.item.disabled.color
+  },
+
+  item__checkIndicator: {
+    paddingRight: '4px'
+  },
+
+  item__icon: {
+    fontSize: '14px',
+    marginRight: '8px'
+  },
+
+  item__icon_hasFa: {
+    color: theme.contextMenu.item.icon.hasFaIcon.color
+  },
+
+  item__text: {
+    flex: 1,
+    marginTop: 'auto',
+    marginBottom: 'auto',
+    paddingRight: '10px',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis'
+  },
+
+  item__isMulti: {
+    borderWidth: '1px',
+    borderStyle: 'solid',
+    borderColor: theme.contextMenu.item.isMulti.borderColor,
+    borderRadius: globalStyles.radius.borderRadius,
+    backgroundColor: theme.contextMenu.item.isMulti.backgroundColor,
+    color: theme.contextMenu.item.isMulti.color,
+    display: 'flex',
+    justifyContent: 'center',
+    margin: '1px',
+    padding: '4px 1rem'
+  },
+
+  item__submenuIndicator: {
+    color: theme.contextMenu.item.submenuIndicator.color
+  },
+
+  item__submenuIndicator_next: {
+    fontSize: '1rem'
+  },
+
+  item__submenuIndicator_accelerator_isWindows: {
+    // Make context menu style match menubar (Windows only- for use w/ slim titlebar)
+    fontFamily: 'menu',
+    fontSize: '12px'
+  }
+})
 
 module.exports = ContextMenuItem
