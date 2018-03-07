@@ -295,6 +295,15 @@ const globalStyles = {
       animationTimingFunction: 'linear',
       animationDuration: '120ms',
       animationFillMode: 'forwards'
+    },
+
+    tabFadeIn: {
+      opacity: 0.5,
+      willChange: 'opacity',
+      animationName: tabFadeInKeyframes,
+      animationDuration: '0.75s',
+      animationTimingFunction: 'ease-in-out',
+      animationFillMode: 'forwards'
     }
   },
 

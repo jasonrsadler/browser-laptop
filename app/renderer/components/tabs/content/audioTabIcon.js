@@ -4,7 +4,7 @@
 
 const React = require('react')
 const ReactDOM = require('react-dom')
-const {StyleSheet, css} = require('aphrodite/no-important')
+const {StyleSheet} = require('aphrodite/no-important')
 
 // Components
 const ReduxComponent = require('../../reduxComponent')
@@ -27,7 +27,6 @@ class AudioTabIcon extends React.Component {
   constructor (props) {
     super(props)
     this.toggleMute = this.toggleMute.bind(this)
-    
   }
 
   get audioIcon () {
@@ -66,7 +65,7 @@ class AudioTabIcon extends React.Component {
     this.transitionIfRequired(prevProps)
   }
 
-  transitionIfRequired(prevProps) {
+  transitionIfRequired (prevProps) {
     const shouldTransitionIn = (
       // need to have the element created already
       this.element &&
@@ -104,7 +103,7 @@ class AudioTabIcon extends React.Component {
       className={styles.icon_audio}
       symbol={this.audioIcon}
       onClick={this.toggleMute}
-      ref={(ref) => {this.element = ReactDOM.findDOMNode(ref)}}
+      ref={(ref) => { this.element = ReactDOM.findDOMNode(ref) }}
     />
   }
 }

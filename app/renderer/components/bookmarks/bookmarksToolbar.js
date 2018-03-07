@@ -218,7 +218,7 @@ class BookmarksToolbar extends React.Component {
           size='14px'
           iconClass={globalStyles.appIcons.angleDoubleRight}
           onClick={this.onMoreBookmarksMenu}
-          custom={styles.bookmarksToolbar__overflowIndicator} 
+          custom={styles.bookmarksToolbar__overflowIndicator}
         />
         : null
       }

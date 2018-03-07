@@ -4,7 +4,7 @@
 
 const React = require('react')
 const ReactDOM = require('react-dom')
-const {StyleSheet, css} = require('aphrodite/no-important')
+const {StyleSheet} = require('aphrodite/no-important')
 
 // Components
 const ReduxComponent = require('../../reduxComponent')
@@ -85,17 +85,17 @@ class CloseTabIcon extends React.Component {
     }
 
     return <TabIcon
-    data-test-id='closeTabIcon'
-    data-test2-id={this.props.showCloseIcon ? 'close-icon-on' : 'close-icon-off'}
-    className={[
-      styles.icon_close,
-      this.props.centralizeTabIcons && styles.icon_close_centered
-    ]}
-    l10nId='closeTabButton'
-    onClick={this.props.onClick}
-    onDragStart={this.onDragStart}
-    draggable='true'
-    ref={(ref) => {this.element = ReactDOM.findDOMNode(ref)}}
+      data-test-id='closeTabIcon'
+      data-test2-id={this.props.showCloseIcon ? 'close-icon-on' : 'close-icon-off'}
+      className={[
+        styles.icon_close,
+        this.props.centralizeTabIcons && styles.icon_close_centered
+      ]}
+      l10nId='closeTabButton'
+      onClick={this.props.onClick}
+      onDragStart={this.onDragStart}
+      draggable='true'
+      ref={(ref) => { this.element = ReactDOM.findDOMNode(ref) }}
   />
   }
 }
@@ -130,5 +130,3 @@ const styles = StyleSheet.create({
 })
 
 module.exports = ReduxComponent.connect(CloseTabIcon)
-
-

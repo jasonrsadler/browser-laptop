@@ -22,7 +22,7 @@ const globalStyles = require('../../styles/global')
 const {theme} = require('../../styles/theme')
 
 class SubmenuIndicatorContainer extends React.Component {
-  render() {
+  render () {
     return <div className={css(styles.SubmenuIndicatorContainer)}>
       {this.props.children}
     </div>

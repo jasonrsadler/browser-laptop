@@ -71,8 +71,8 @@ const styles = StyleSheet.create({
     borderRadius: globalStyles.radius.borderRadius,
     boxSizing: 'border-box',
     display: 'table',
-    minWidth: '220px',
-    maxWidth: '400px'
+    minWidth: '225px',
+    maxWidth: '500px'
   },
 
   contextMenuSingle_isSubmenu: {

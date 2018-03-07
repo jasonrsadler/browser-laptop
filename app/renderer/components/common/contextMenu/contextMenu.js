@@ -312,7 +312,7 @@ const styles = StyleSheet.create({
     paddingRight: '10px',
     paddingBottom: '10px',
     userSelect: 'none',
-    minWidth: '225px',
+    minWidth: '230px',
 
     // This is a reasonable max height and also solves problems for bookmarks menu
     // and bookmarks overflow menu reaching down too low.
