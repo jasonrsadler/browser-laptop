@@ -22,58 +22,52 @@ const contextMenus = require('../../../../js/contextMenus')
 const downloadUtil = require('../../../../js/state/downloadUtil')
 const urlUtil = require('../../../../js/lib/urlutil')
 const {getOrigin} = require('../../../../js/lib/urlutil')
+const {StyleSheet, css} = require('aphrodite/no-important')
+const globalStyles = require('../styles/global')
 const cx = require('../../../../js/lib/classSet')
 
 class DownloadItem extends React.Component {
   constructor (props) {
     super(props)
-    this.onRevealDownload = this.onRevealDownload.bind(this)
-    this.onOpenDownload = this.onOpenDownload.bind(this)
     this.onPauseDownload = this.onDownloadActionPerformed.bind(this, PAUSE)
     this.onResumeDownload = this.onDownloadActionPerformed.bind(this, RESUME)
-    this.onCancelDownload = this.onDownloadActionPerformed.bind(this, CANCEL)
-    this.onClearDownload = this.onClearDownload.bind(this)
-    this.onShowDeleteConfirmation = this.onShowDeleteConfirmation.bind(this)
-    this.onHideDeleteConfirmation = this.onHideDeleteConfirmation.bind(this)
-    this.onDeleteDownload = this.onDeleteDownload.bind(this)
-    this.onReDownload = this.onReDownload.bind(this)
-    this.onCopyLinkToClipboard = this.onCopyLinkToClipboard.bind(this)
+    this.onCancelDownload = this.onDownloadActionPerformed.bind(this, CANCEL)    
   }
 
-  onRevealDownload () {
+  onRevealDownload = () => {
     appActions.downloadRevealed(this.props.downloadId)
   }
 
-  onOpenDownload () {
+  onOpenDownload = () => {
     appActions.downloadOpened(this.props.downloadId)
   }
 
-  onClearDownload () {
+  onClearDownload = () => {
     appActions.downloadCleared(this.props.downloadId)
   }
 
-  onShowDeleteConfirmation () {
+  onShowDeleteConfirmation = () => {
     appActions.showDownloadDeleteConfirmation()
   }
 
-  onHideDeleteConfirmation () {
+  onHideDeleteConfirmation = () => {
     appActions.hideDownloadDeleteConfirmation()
   }
 
-  onDeleteDownload () {
+  onDeleteDownload = () => {
     appActions.hideDownloadDeleteConfirmation()
     appActions.downloadDeleted(this.props.downloadId)
   }
 
-  onDownloadActionPerformed (downloadAction) {
+  onDownloadActionPerformed = (downloadAction) => {
     appActions.downloadActionPerformed(this.props.downloadId, downloadAction)
   }
 
-  onCopyLinkToClipboard () {
+  onCopyLinkToClipboard = () => {
     appActions.downloadCopiedToClipboard(this.props.downloadId)
   }
 
-  onReDownload () {
+  onReDownload = () => {
     appActions.downloadRedownloaded(this.props.downloadId)
   }
 
@@ -149,19 +143,16 @@ class DownloadItem extends React.Component {
       onMouseLeave={this.onHideDeleteConfirmation}
       data-test-id='downloadItem'
       data-test2-id={this.isCompleted ? 'completed' : null}
-      className={cx({
-        downloadItem: true,
-        deleteConfirmationVisible: this.props.deleteConfirmationVisible,
-        [this.props.downloadState]: true
-      })}>
+      className={css(styles.downloadItem) + ' ' + (this.props.deleteConfirmationVisible ? (css(styles.deleteConfirmationVisible) + ' ') : '') + this.props.downloadState}
+      >
       {
         this.props.deleteConfirmationVisible
-        ? <div className='deleteConfirmation'>
-          <span data-l10n-id='downloadDeleteConfirmation' /><Button testId='confirmDeleteButton' l10nId='ok' className='primaryButton confirmDeleteButton' onClick={this.onDeleteDownload} />
+        ? <div className={css(styles.deleteConfirmation)}>
+          <span data-l10n-id='downloadDeleteConfirmation' /><Button testId='confirmDeleteButton' l10nId='ok' className={`primaryButton ${css(styles.confirmDeleteButton)}`} onClick={this.onDeleteDownload} />
         </div>
         : null
       }
-      <div className='downloadActions'>
+      <div className={css(styles.downloadActions)}>
         {
           this.props.allowPause
           ? <Button
@@ -253,17 +244,17 @@ class DownloadItem extends React.Component {
       </div>
       {
         (this.isInProgress || this.isPaused) && this.props.totalBytes
-        ? <div data-test-id='downloadProgress' className='downloadProgress' style={progressStyle} />
+        ? <div data-test-id='downloadProgress' className={css(styles.downloadProgress)} style={progressStyle} />
         : null
       }
-      <div className='downloadInfo'>
+      <div className={css(styles.downloadInfo)}>
         <span>
-          <div data-test-id='downloadFilename' className='downloadFilename' title={this.props.fileName + '\n' + locale.translation(this.props.statel10n)}>
+          <div data-test-id='downloadFilename' className={css(styles.downloadFilename)} title={this.props.fileName + '\n' + locale.translation(this.props.statel10n)}>
             {this.props.fileName}
           </div>
           {
             this.props.origin
-              ? <div data-test-id='downloadOrigin' className='downloadOrigin'>
+              ? <div data-test-id='downloadOrigin' className={css(styles.downloadOrigin)}>
                 {
                   this.props.isInsecure
                     ? <span className='fa fa-unlock isInsecure' />
@@ -277,14 +268,104 @@ class DownloadItem extends React.Component {
           }
           {
             this.isCancelled || this.isInterrupted || this.isUnauthorized || this.isCompleted || this.isPaused || this.isInProgress
-            ? <div className='downloadState' data-l10n-id={this.props.statel10n} data-l10n-args={JSON.stringify(l10nStateArgs)} />
+            ? <div className={css(styles.downloadState)} data-l10n-id={this.props.statel10n} data-l10n-args={JSON.stringify(l10nStateArgs)} />
             : null
           }
         </span>
-        <span className='downloadArrow fa-caret-down fa' />
+        <span className={`${css(styles.downloadArrow)} fa-caret-down fa`} />
       </div>
     </span>
   }
 }
+
+const styles = StyleSheet.create({
+  downloadItem: {
+    backgroundColor: 'white',
+    border: '1px solid ' + globalStyles.color.chromeTertiary,
+    borderRadius: globalStyles.radius.borderRadius,
+    boxSizing: 'border-box',
+    display: 'flex',
+    fontSize: '11px',
+    flexDirection: 'column',
+    height: '50px', // TODO: add to global
+    position: 'relative',
+    margin: 'auto 10px auto 0',
+    maxWidth: '200px',
+    minWidth: '200px',
+    ':hover': {
+      height: '73px',
+      top: '-23px'
+    },
+    ':not(:hover)': {
+      ':nth-child(1) > div': {
+        display: 'none'
+      }
+    }
+  },
+
+  deleteConfirmation: {
+    lineHeight: 2,
+    borderBottom: '1px solid #CCC',
+    padding: '5px 0',
+    marginBottom: 'auto 0 10px 0',
+    fontSize: '12px'
+  },
+
+  confirmDeleteButton: {
+    fontWeight: 'normal',
+    padding: '1px',
+    minWidth: '50px',
+    float: 'right',
+    marginRight: '-5px'
+  },
+
+  downloadActions: {
+    margin: '8px 0 0'
+  },
+
+  downloadProgress: {
+    backgroundColor: globalStyles.color.highlightBlue,
+    transition: 'width 0.5s',
+    left: 0,
+    opacity: 0.5,
+    position: 'absolute',
+    width: '100%',
+    height: '100%'
+  },
+
+  downloadInfo: {
+    display: 'flex',
+    margin: 'auto 0'
+  },
+
+  downloadFilename: {
+    margin: 'auto 0',
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    width: '150px'
+  },
+
+  downloadOrigin: {
+    margin: 'auto 0',
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    width: '150px'
+  },
+
+  downloadState: {
+    margin: 'auto 0',
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    width: '150px'
+  },
+
+  downloadArrow: {
+    width: '14px',
+    margin: 'auto 0 auto auto'
+  }
+})
 
 module.exports = ReduxComponent.connect(DownloadItem)

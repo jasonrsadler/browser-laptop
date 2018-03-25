@@ -21,20 +21,19 @@ const appActions = require('../../../../js/actions/appActions')
 const contextMenus = require('../../../../js/contextMenus')
 const downloadUtil = require('../../../../js/state/downloadUtil')
 const cx = require('../../../../js/lib/classSet')
+const globalStyles = require('../styles/global')
 
 class DownloadsBar extends React.Component {
   constructor (props) {
     super(props)
-    this.onHideDownloadsToolbar = this.onHideDownloadsToolbar.bind(this)
-    this.onShowDownloads = this.onShowDownloads.bind(this)
   }
 
-  onHideDownloadsToolbar () {
+  onHideDownloadsToolbar = () => {
     windowActions.setDownloadsToolbarVisible(false)
     webviewActions.setWebviewFocused()
   }
 
-  onShowDownloads () {
+  onShowDownloads = () => {
     appActions.createTabRequested({
       url: 'about:downloads'
     })
@@ -50,21 +49,18 @@ class DownloadsBar extends React.Component {
   }
 
   render () {
-    return <div className='downloadsBar'
+    return <div className={css(styles.downloadsBar)}
       data-test-id='downloadsBar'
       onContextMenu={contextMenus.onDownloadsToolbarContextMenu.bind(null, undefined, undefined)}
     >
-      <div className='downloadItems'>
+      <div className={css(styles.downloadItems)}>
         {
           this.props.downloads.map(downloadId =>
             <DownloadItem downloadId={downloadId} />
           )
         }
       </div>
-      <div className={cx({
-        downloadBarButtons: true,
-        [css(styles.downloadsBar__downloadBarButtons)]: true
-      })}>
+      <div className={css(styles.downloadsBar__downloadBarButtons)}>
         <BrowserButton
           secondaryColor
           l10nId='downloadViewAll'
@@ -73,7 +69,7 @@ class DownloadsBar extends React.Component {
           onClick={this.onShowDownloads}
         />
         <Button
-          className='downloadButton hideDownloadsToolbar'
+          className={css(styles.downloadButton)}
           testId='hideDownloadsToolbar'
           onClick={this.onHideDownloadsToolbar}
         />
@@ -85,7 +81,28 @@ class DownloadsBar extends React.Component {
 module.exports = ReduxComponent.connect(DownloadsBar)
 
 const styles = StyleSheet.create({
+  downloadsBar: {
+    userSelect: 'none',
+    boxSizing: 'border-box',
+    cursor: 'default',
+    backgroundColor: '#e6e6e6',
+    borderTop: '1px solid #888',
+    color: 'black',
+    display: 'flex',
+    height: globalStyles.spacing.downloadsBarHeight,
+    padding: '5px 20px',
+    width: '100%',
+    zIndex: globalStyles.zindex.zindexDownloadsBar
+  },
+
+  downloadItems: {
+    display: 'flex',
+    flexGrow: 1,
+    position: 'relative'
+  },
+
   downloadsBar__downloadBarButtons: {
+    margin: 'auto 0',
     display: 'flex',
     flexFlow: 'row nowrap',
     alignItems: 'center'
@@ -93,5 +110,16 @@ const styles = StyleSheet.create({
 
   downloadsBar__downloadBarButtons__viewAllButton: {
     marginRight: '20px'
+  },
+
+  downloadButton: {
+    ':hover': {
+      background: 'url(\'../../../img/toolbar/close_download_btn_hover.svg\') center no-repeat',
+      backgroundSize: '14px 14px'
+    },
+    background: 'url(\'../../../img/toolbar/close_download_btn.svg\') center no-repeat',
+    backgroundSize: '14px 14px',
+    height: '18px',
+    width: '18px'
   }
 })
