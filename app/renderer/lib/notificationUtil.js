@@ -54,7 +54,9 @@ const notificationUtil = {
       Windows_NT: () => {
         if (!notifier.utils.isLessThanWin8()) {
           return {
-            appID: 'com.squirrel.brave.Brave'
+            appID: 'com.squirrel.brave.Brave',
+            appName: 'com.squirrel.brave.Brave',
+            id: 0
           }
         }
       }

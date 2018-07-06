@@ -22,6 +22,7 @@ const appActions = require('../../../js/actions/appActions')
 const notificationTypes = require('../../common/constants/notificationTypes')
 // const searchProviders = require('../../../js/data/searchProviders').providers // apparently busted
 const settings = require('../../../js/constants/settings')
+const batIcon = '../../../img/BAT_icon.png'
 
 // State
 const windows = require('../windows')
@@ -467,7 +468,7 @@ const goAheadAndShowTheAd = (windowId, notificationTitle, notificationText, noti
     {
       title: notificationTitle,
       message: notificationText,
-      icon: path.join(__dirname, '../../../img/BAT_icon.png'),
+      icon: path.dirname(batIcon),
       sound: true,
       timeout: 60,
       wait: true,
@@ -656,12 +657,12 @@ const retrieveSSID = () => {
 
   getSSID((err, ssid) => {
     if (err) return appActions.onUserModelLog('SSID unavailable', { reason: err.toString() })
-
     appActions.onSSIDReceived(ssid)
   })
 }
 
 const generateAdUUIDString = () => {
+  console.log(os.arch())
   return uuidv4()
 }
 

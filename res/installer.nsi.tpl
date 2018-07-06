@@ -61,6 +61,8 @@ Section
                    "DisplayIcon" "$INSTDIR\icon.ico"
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APP_NAME}" \
                    "DisplayVersion" "${APP_VERSION}"
+  WriteRegDWORD HKCU "Software\Microsoft\Windows\CurrentVersion\Notifications\Settings\com.squirrel.brave.Brave" \
+                   "ShowInActionCenter" "0x00000001"
 SectionEnd
 
 # create a section to define what the uninstaller does

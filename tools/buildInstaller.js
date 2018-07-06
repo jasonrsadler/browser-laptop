@@ -71,24 +71,24 @@ const raiseError = (errorMessage) => {
   process.exit(1)
 }
 
-if (isDarwin || isWindows) {
-  const requiredText = 'is required for widevine signing'
-  if (!process.env.SIGN_WIDEVINE_PASSPHRASE) {
-    raiseError('SIGN_WIDEVINE_PASSPHRASE ' + requiredText)
-  }
-  if (!process.env.SIGN_WIDEVINE_CERT) {
-    raiseError('SIGN_WIDEVINE_CERT ' + requiredText)
-  }
-  if (!process.env.SIGN_WIDEVINE_KEY) {
-    raiseError('SIGN_WIDEVINE_KEY ' + requiredText)
-  }
+// if (isDarwin || isWindows) {
+//   const requiredText = 'is required for widevine signing'
+//   if (!process.env.SIGN_WIDEVINE_PASSPHRASE) {
+//     raiseError('SIGN_WIDEVINE_PASSPHRASE ' + requiredText)
+//   }
+//   if (!process.env.SIGN_WIDEVINE_CERT) {
+//     raiseError('SIGN_WIDEVINE_CERT ' + requiredText)
+//   }
+//   if (!process.env.SIGN_WIDEVINE_KEY) {
+//     raiseError('SIGN_WIDEVINE_KEY ' + requiredText)
+//   }
 
-  // check if widevine script exists
-  const fs = require('fs')
-  if (!fs.existsSync('tools/signature_generator.py')) {
-    raiseError('`tools/signature_generator.py` ' + requiredText)
-  }
-}
+//   // check if widevine script exists
+//   const fs = require('fs')
+//   if (!fs.existsSync('tools/signature_generator.py')) {
+//     raiseError('`tools/signature_generator.py` ' + requiredText)
+//   }
+// }
 
 if (isDarwin) {
   const identifier = process.env.IDENTIFIER
@@ -146,8 +146,8 @@ if (isDarwin) {
       try {
         await execPromise([
           `mv ${packagePath} ${packagePathUnsigned}`,
-          `productsign --sign ${identifier} ${packagePathUnsigned} ${packagePath}`,
-          `rm ${packagePathUnsigned}`
+          // `productsign --sign ${identifier} ${packagePathUnsigned} ${packagePath}`,
+          // `rm ${packagePathUnsigned}`
         ])
         console.log(`pkg signing complete`)
       } catch (e) {
@@ -163,9 +163,9 @@ if (isDarwin) {
   // a password MUST be passed as the CERT_PASSWORD environment variable
   var cert = process.env.CERT || '../brave-authenticode.pfx'
   var certPassword = process.env.CERT_PASSWORD
-  if (!certPassword) {
-    raiseError('Certificate password required. Set environment variable CERT_PASSWORD.')
-  }
+  // if (!certPassword) {
+  //   raiseError('Certificate password required. Set environment variable CERT_PASSWORD.')
+  // }
 
   const getSignCmd = (file) => {
     // https://docs.microsoft.com/en-us/dotnet/framework/tools/signtool-exe
@@ -181,10 +181,10 @@ if (isDarwin) {
     'python tools/signature_generator.py --input_file "' + wvExe + '" --flag 1'
   ]
   execute(cmds, {}, (err) => {
-    if (err) {
-      raiseError('signing for widevine failed: ' + JSON.stringify(err))
-      return
-    }
+    // if (err) {
+    //   raiseError('signing for widevine failed: ' + JSON.stringify(err))
+    //   return
+    // }
 
     // Because both x64 and ia32 creates a RELEASES and a .nupkg file we
     // need to store the output files in separate directories
@@ -201,7 +201,7 @@ if (isDarwin) {
       loadingGif: `res/brave_splash_installing${splashKey}.gif`,
       setupIcon: `res/${channel}/brave_installer.ico`,
       iconUrl: `https://raw.githubusercontent.com/brave/browser-laptop/master/res/${channel}/app.ico`,
-      signWithParams: format('-a -fd sha256 -f "%s" -p "%s"', path.resolve(cert), certPassword),
+      // signWithParams: format('-a -fd sha256 -f "%s" -p "%s"', path.resolve(cert), certPassword),
       noMsi: true,
       exe: `${appName}.exe`,
       setupExe: `${appName}Setup-${arch}.exe`
